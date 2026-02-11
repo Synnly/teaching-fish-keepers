@@ -46,8 +46,12 @@ const server = Bun.serve({
       return eventResponse;
     }
 
-    return Response.json({ error: "Not found" }, { status: 404, headers: corsHeaders() });
+    return Response.json(
+      { error: "Not found" },
+      { status: 404, headers: corsHeaders() },
+    );
   },
 });
 
 console.log(`Server running at http://localhost:${server.port}`);
+console.log("test");
