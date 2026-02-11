@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom";
 import { AuthContext, AuthProvider } from "../../../src/contexts/AuthContext";
 import * as authApi from "../../../src/api/auth";
+
+vi.mock("../../../src/api/auth");
 
 function Consumer() {
   const ctx = useContext(AuthContext);
