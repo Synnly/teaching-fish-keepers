@@ -1,4 +1,4 @@
-import { describe, it, expect, mock } from "bun:test";
+import { describe, it, expect } from "bun:test";
 import { requireAuth } from "../../../src/auth/guard";
 import * as sessions from "../../../src/auth/sessions";
 

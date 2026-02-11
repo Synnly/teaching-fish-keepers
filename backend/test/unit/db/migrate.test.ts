@@ -2,13 +2,11 @@ import { describe, it, expect, mock, spyOn } from "bun:test";
 import { migrate } from "../../../src/db/migrate";
 import sql from "../../../src/db/connection";
 
-// Mocking the sql.unsafe method
+// Mocking the sql connection as a function with an unsafe method
 mock.module("../../../src/db/connection", () => {
-  return {
-    default: {
-      unsafe: mock(async () => {}),
-    },
-  };
+  const m = mock(async () => []);
+  m.unsafe = mock(async () => []);
+  return { default: m };
 });
 
 describe("migrate", () => {
@@ -26,7 +24,7 @@ describe("migrate", () => {
 
   it("should throw an error if sql.unsafe fails", async () => {
     const logSpy = spyOn(console, "log").mockImplementation(() => {});
-    (sql.unsafe).mockImplementationOnce(async () => {
+    sql.unsafe.mockImplementationOnce(async () => {
       throw new Error("DB Error");
     });
 
