@@ -41,6 +41,13 @@ describe("api/events", () => {
     expect(res).toEqual({ id: 42 });
   });
 
+  it("getEvent throws when response not ok", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    globalThis.fetch = fetchMock;
+
+    await expect(getEvent(42)).rejects.toThrow("Failed to fetch event");
+  });
+
   it("createEvent includes auth header if token in localStorage", async () => {
     localStorage.setItem("club_poisson_token", "tok");
 
@@ -58,6 +65,33 @@ describe("api/events", () => {
       },
       body: JSON.stringify({ title: "t", date: "2026-02-11T12:00:00Z" }),
     });
+  });
+
+  it("createEvent does not include auth header if localStorage is empty", async () => {
+    localStorage.removeItem("club_poisson_token");
+
+    const json = vi.fn().mockResolvedValue({ id: 1 });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json });
+    globalThis.fetch = fetchMock;
+
+    await createEvent({ title: "t", date: "2026-02-11T12:00:00Z" });
+
+    expect(fetchMock).toHaveBeenCalledWith("/api/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title: "t", date: "2026-02-11T12:00:00Z" }),
+    });
+  });
+
+  it("createEvent throws when response not ok", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    globalThis.fetch = fetchMock;
+
+    await expect(
+      createEvent({ title: "t", date: "2026-02-11T12:00:00Z" }),
+    ).rejects.toThrow("Failed to create event");
   });
 
   it("updateEvent uses PUT and includes auth header if token exists", async () => {
@@ -79,10 +113,33 @@ describe("api/events", () => {
     });
   });
 
+  it("updateEvent throws when response not ok", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    globalThis.fetch = fetchMock;
+
+    await expect(
+      updateEvent(5, { title: "u", date: "2026-02-11T12:00:00Z" }),
+    ).rejects.toThrow("Failed to update event");
+  });
+
   it("deleteEvent throws when response not ok", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: false });
     globalThis.fetch = fetchMock;
 
     await expect(deleteEvent(9)).rejects.toThrow("Failed to delete event");
+  });
+
+  it("deleteEvent does not include auth header if localStorage is empty", async () => {
+    localStorage.removeItem("club_poisson_token");
+
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    globalThis.fetch = fetchMock;
+
+    await deleteEvent(10);
+
+    expect(fetchMock).toHaveBeenCalledWith("/api/events/10", {
+      method: "DELETE",
+      headers: {},
+    });
   });
 });

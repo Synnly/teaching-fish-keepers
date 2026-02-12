@@ -35,20 +35,18 @@ describe("EventFormPage", () => {
 
   it("submits new event", async () => {
     const user = userEvent.setup();
-    const createSpy = vi
-      .spyOn(eventsApi, "createEvent")
-      .mockResolvedValue({
-        id: 0,
-        title: "",
-        description: "",
-        date: "",
-        end_date: null,
-        location: "",
-        image_url: null,
-        max_participants: null,
-        created_at: "",
-        updated_at: ""
-      });
+    const createSpy = vi.spyOn(eventsApi, "createEvent").mockResolvedValue({
+      id: 0,
+      title: "",
+      description: "",
+      date: "",
+      end_date: null,
+      location: "",
+      image_url: null,
+      max_participants: null,
+      created_at: "",
+      updated_at: "",
+    });
 
     render(
       <MemoryRouter>
@@ -122,20 +120,18 @@ describe("EventFormPage", () => {
       updated_at: "2023-10-10T10:00:00.000Z",
     };
     vi.spyOn(eventsApi, "getEvent").mockResolvedValue(mockEvent);
-    const updateSpy = vi
-      .spyOn(eventsApi, "updateEvent")
-      .mockResolvedValue({
-        id: 0,
-        title: "",
-        description: "",
-        date: "",
-        end_date: null,
-        location: "",
-        image_url: null,
-        max_participants: null,
-        created_at: "",
-        updated_at: ""
-      });
+    const updateSpy = vi.spyOn(eventsApi, "updateEvent").mockResolvedValue({
+      id: 0,
+      title: "",
+      description: "",
+      date: "",
+      end_date: null,
+      location: "",
+      image_url: null,
+      max_participants: null,
+      created_at: "",
+      updated_at: "",
+    });
 
     render(
       <MemoryRouter initialEntries={["/admin/events/123/edit"]}>
@@ -166,20 +162,18 @@ describe("EventFormPage", () => {
 
   it("handles max_participants input changes correctly", async () => {
     const user = userEvent.setup();
-    const createSpy = vi
-      .spyOn(eventsApi, "createEvent")
-      .mockResolvedValue({
-        id: 0,
-        title: "",
-        description: "",
-        date: "",
-        end_date: null,
-        location: "",
-        image_url: null,
-        max_participants: null,
-        created_at: "",
-        updated_at: ""
-      });
+    const createSpy = vi.spyOn(eventsApi, "createEvent").mockResolvedValue({
+      id: 0,
+      title: "",
+      description: "",
+      date: "",
+      end_date: null,
+      location: "",
+      image_url: null,
+      max_participants: null,
+      created_at: "",
+      updated_at: "",
+    });
 
     render(
       <MemoryRouter>

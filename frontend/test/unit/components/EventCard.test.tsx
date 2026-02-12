@@ -41,4 +41,30 @@ describe("EventCard", () => {
     expect(screen.getByText("Apprendre les bases")).toBeInTheDocument();
     expect(screen.getByText("20 participants max")).toBeInTheDocument();
   });
+
+  it("renders minimal event without optional fields", () => {
+    const event: Event = {
+      id: 2,
+      title: "Petit event",
+      description: "",
+      date: "2026-02-11T18:30:00.000Z",
+      end_date: null,
+      location: "",
+      image_url: null,
+      max_participants: null,
+      created_at: "2026-01-01T00:00:00.000Z",
+      updated_at: "2026-01-01T00:00:00.000Z",
+    };
+
+    render(<EventCard event={event} />);
+
+    expect(screen.getByText("Petit event")).toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(screen.queryByText(/participants max/i)).not.toBeInTheDocument();
+    const paragraphs = screen.queryAllByRole("paragraph");
+    paragraphs.forEach((p) => {
+      expect(p.textContent).not.toBe("");
+      expect(p.textContent).not.toBe("null");
+    });
+  });
 });
