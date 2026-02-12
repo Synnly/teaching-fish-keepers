@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
@@ -37,7 +37,18 @@ describe("EventFormPage", () => {
     const user = userEvent.setup();
     const createSpy = vi
       .spyOn(eventsApi, "createEvent")
-      .mockResolvedValue({} as any);
+      .mockResolvedValue({
+        id: 0,
+        title: "",
+        description: "",
+        date: "",
+        end_date: null,
+        location: "",
+        image_url: null,
+        max_participants: null,
+        created_at: "",
+        updated_at: ""
+      });
 
     render(
       <MemoryRouter>
@@ -113,7 +124,18 @@ describe("EventFormPage", () => {
     vi.spyOn(eventsApi, "getEvent").mockResolvedValue(mockEvent);
     const updateSpy = vi
       .spyOn(eventsApi, "updateEvent")
-      .mockResolvedValue({} as any);
+      .mockResolvedValue({
+        id: 0,
+        title: "",
+        description: "",
+        date: "",
+        end_date: null,
+        location: "",
+        image_url: null,
+        max_participants: null,
+        created_at: "",
+        updated_at: ""
+      });
 
     render(
       <MemoryRouter initialEntries={["/admin/events/123/edit"]}>
@@ -146,7 +168,18 @@ describe("EventFormPage", () => {
     const user = userEvent.setup();
     const createSpy = vi
       .spyOn(eventsApi, "createEvent")
-      .mockResolvedValue({} as any);
+      .mockResolvedValue({
+        id: 0,
+        title: "",
+        description: "",
+        date: "",
+        end_date: null,
+        location: "",
+        image_url: null,
+        max_participants: null,
+        created_at: "",
+        updated_at: ""
+      });
 
     render(
       <MemoryRouter>
