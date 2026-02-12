@@ -1,0 +1,5 @@
+services:
+  frontend:
+    image: ${registry}/frontend
+  backend:
+    image: ${registry}/backend
