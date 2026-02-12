@@ -34,7 +34,7 @@ describe("useAuth", () => {
   describe("Initialization", () => {
     it("restores session if localStorage has valid token", async () => {
       localStorage.setItem("club_poisson_token", "valid-token");
-      (authApi.checkAuth as any).mockResolvedValue({ authenticated: true });
+      (authApi.checkAuth).mockResolvedValue({ authenticated: true });
       const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
       await waitFor(() => expect(result.current.loading).toBe(false));
       expect(result.current.isAuthenticated).toBe(true);
@@ -43,7 +43,7 @@ describe("useAuth", () => {
     it("clears session if localStorage has invalid token", async () => {
       const removeItemSpy = vi.spyOn(Storage.prototype, "removeItem");
       localStorage.setItem("club_poisson_token", "invalid-token");
-      (authApi.checkAuth as any).mockResolvedValue({ authenticated: false });
+      (authApi.checkAuth).mockResolvedValue({ authenticated: false });
       const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
       await waitFor(() => expect(result.current.loading).toBe(false));
       expect(result.current.isAuthenticated).toBe(false);
@@ -54,8 +54,8 @@ describe("useAuth", () => {
   describe("Login", () => {
     it("updates state and storage on success", async () => {
       const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
-      (authApi.checkAuth as any).mockResolvedValue({ authenticated: false });
-      (authApi.login as any).mockResolvedValue({ token: "new-token" });
+      (authApi.checkAuth).mockResolvedValue({ authenticated: false });
+      (authApi.login).mockResolvedValue({ token: "new-token" });
       const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
       await waitFor(() => expect(result.current.loading).toBe(false));
       await act(async () => {
@@ -69,8 +69,8 @@ describe("useAuth", () => {
     });
 
     it("returns error and keeps state on failure", async () => {
-      (authApi.checkAuth as any).mockResolvedValue({ authenticated: false });
-      (authApi.login as any).mockResolvedValue({ error: "Bad password" });
+      (authApi.checkAuth).mockResolvedValue({ authenticated: false });
+      (authApi.login).mockResolvedValue({ error: "Bad password" });
       const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
       await waitFor(() => expect(result.current.loading).toBe(false));
       let error;
@@ -86,8 +86,8 @@ describe("useAuth", () => {
     it("clears state and storage", async () => {
       const removeItemSpy = vi.spyOn(Storage.prototype, "removeItem");
       localStorage.setItem("club_poisson_token", "token-to-delete");
-      (authApi.checkAuth as any).mockResolvedValue({ authenticated: true });
-      (authApi.logout as any).mockResolvedValue({});
+      (authApi.checkAuth).mockResolvedValue({ authenticated: true });
+      (authApi.logout).mockResolvedValue({});
       const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider });
       await waitFor(() => expect(result.current.isAuthenticated).toBe(true));
       await act(async () => {
