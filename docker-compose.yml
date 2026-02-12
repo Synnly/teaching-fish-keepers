@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:17
+    container_name: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -14,10 +15,9 @@ services:
       retries: 5
       start_period: 10s
 
-
-
   backend:
     build: ./backend
+    container_name: backend
     environment:
       PGHOST: postgres
       PGDATABASE: ${POSTGRES_DB}
@@ -29,11 +29,46 @@ services:
 
   frontend:
     build: ./frontend
+    container_name: frontend
     ports:
       - "80:80"
     depends_on:
       - backend
     restart: always
 
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    container_name: blackbox-exporter
+    ports:
+      - "9115:9115"
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - blackbox-exporter
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    environment:
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/monitoring_dashboard.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
 volumes:
   pgdata:
+  grafana-data:
