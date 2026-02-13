@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-
+env:
+  path: /home/admin/app
+  compose_override: docker-compose-prod
+  tag: sha-${{ github.sha }}-main
 jobs:
   env:
     registry:
@@ -30,7 +33,9 @@ jobs:
         with:
           context: "{{defaultContext}}:backend"
           push: true
-          tags: ${{env.REGISTRY}}/backend
+          tags:
+            - ${{env.REGISTRY}}/backend:${{env.tag}}
+            - ${{env.REGISTRY}}/backend:latest-main
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -39,7 +44,9 @@ jobs:
         with:
           context: "{{defaultContext}}:frontend"
           push: true
-          tags: ${{env.REGISTRY}}/frontend
+          tags:
+            - ${{env.REGISTRY}}/frontend:${{env.tag}}
+            - ${{env.REGISTRY}}/frontend:latest-main
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -50,8 +57,8 @@ jobs:
           username: admin
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
-          source: "docker-compose.yml"
-          target: "/home/admin/app"
+          source: "docker-compose.yml,${{env.compose_override}}"
+          target: "${{env.path}}"
 
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
@@ -61,6 +68,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /home/admin/app
+            cd ${{env.path}}
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo ${{env.tag}} > .env
             docker compose pull
-            docker compose -f docker-compose.yml -f docker-compose-prod.yml up -d
+            docker compose -f docker-compose.yml -f ${{env.compose_override}} up -d
+            docker image prune -f
