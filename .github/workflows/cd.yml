@@ -8,9 +8,10 @@ env:
   path: /home/admin/app
   compose_override: docker-compose-prod.yml
   tag: sha-${{ github.sha }}-main
+  registry_name: ghcr.io
+  registry: ghcr.io/synnly/teaching-fish-keepers
 jobs:
-  env:
-    registry:
+
   docker:
     permissions:
       contents: read
@@ -21,7 +22,7 @@ jobs:
       - name: Docker login
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ${{env.registry_name}}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,9 +34,7 @@ jobs:
         with:
           context: "{{defaultContext}}:backend"
           push: true
-          tags:
-            - ${{env.REGISTRY}}/backend:${{env.tag}}
-            - ${{env.REGISTRY}}/backend:latest-main
+          tags: ${{env.registry}}/backend:${{env.tag}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -49,9 +48,8 @@ jobs:
         with:
           context: "{{defaultContext}}:frontend"
           push: true
-          tags:
-            - ${{env.REGISTRY}}/frontend:${{env.tag}}
-            - ${{env.REGISTRY}}/frontend:latest-main
+          tags: ${{env.registry}}/frontend:${{env.tag}}
+            
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -75,7 +73,7 @@ jobs:
           script: |
             cd ${{env.path}}
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            echo ${{env.tag}} > .env
+            echo "TAG=${{env.tag}}" > .env.deploy
             docker compose pull
             docker compose -f docker-compose.yml -f ${{env.compose_override}} up -d
             docker image prune -f
