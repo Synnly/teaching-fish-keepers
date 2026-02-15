@@ -59,7 +59,7 @@ jobs:
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST }}
-          username: admin
+          username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
           source: "docker-compose.yml,${{env.compose_override}}"
@@ -69,7 +69,7 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{secrets_SSH_USERNAME}}
+          username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
