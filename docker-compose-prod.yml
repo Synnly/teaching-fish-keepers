@@ -1,5 +1,5 @@
 services:
   frontend:
-    image: ${registry}/frontend:${TAG}
+    image: ${REGISTRY}/frontend:${TAG}
   backend:
-    image: ${registry}/backend:${TAG}
+    image: ${REGISTRY}/backend:${TAG}
