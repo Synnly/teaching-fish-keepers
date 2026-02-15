@@ -56,7 +56,7 @@ jobs:
       - name: Copy compose to vps
         uses: appleboy/scp-action@v1
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ secrets.SSH_HOST }}
           username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
