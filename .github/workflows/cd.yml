@@ -66,6 +66,7 @@ jobs:
           source: "grafana/,prometheus.yml,docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
           strip_components: 0
+          rm: true
            
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
