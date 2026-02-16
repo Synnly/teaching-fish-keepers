@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  backend:
+    name: ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [ backend, frontend ]
+    defaults:
+      run:
+        working-directory: ./${{ matrix.project }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Format
+        run: bun run format
+
+      - name: Test
+        run: bun test --pass-with-no-tests

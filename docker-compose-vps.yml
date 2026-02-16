@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:17
-    container_name: postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,8 +15,6 @@ services:
       start_period: 10s
 
   backend:
-    build: ./backend
-    container_name: backend
     environment:
       PGHOST: postgres
       PGDATABASE: ${POSTGRES_DB}
@@ -29,14 +26,11 @@ services:
         condition: service_healthy
 
   frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     restart: always
-
+    
   blackbox-exporter:
     image: prom/blackbox-exporter
     container_name: blackbox-exporter
@@ -70,6 +64,10 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
+
 volumes:
   pgdata:
   grafana-data:
+networks:
+  gateway:
+      external: true

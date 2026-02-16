@@ -1,0 +1,17 @@
+services:
+  frontend:
+    networks:
+      - gateway
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.club-stg.rule=Host(`club-poisson-staging.duckdns.org`)"
+      - "traefik.http.routers.club-stg.entrypoints=websecure"
+      - "traefik.http.routers.club-stg.tls.certresolver=myresolver"
+      - "traefik.docker.network=gateway"
+      - "traefik.http.routers.club-stg.tls=true"
+      - "traefik.http.services.club-stg.loadbalancer.server.port=80"
+    image: ${REGISTRY}/frontend:${TAG}
+  backend:
+    image: ${REGISTRY}/backend:${TAG}
+
