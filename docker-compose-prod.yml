@@ -1,7 +1,4 @@
 services:
-  env_file:
-    - .env
-    - .env-deploy
   frontend:
     image: ${REGISTRY}/frontend:${TAG}
   backend:
