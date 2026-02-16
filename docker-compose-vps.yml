@@ -30,7 +30,8 @@ services:
       backend:
         condition: service_started
     restart: always
-    blackbox-exporter:
+    
+  blackbox-exporter:
     image: prom/blackbox-exporter
     container_name: blackbox-exporter
     ports:
