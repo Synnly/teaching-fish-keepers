@@ -1,10 +1,15 @@
 services:
   frontend:
+    networks:
+      - gateway
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.club-stg.rule=Host('club-poisson-staging.duckdns.org')"
+      - "traefik.http.routers.club-stg.entrypoints=websecure"
+      - "traefik.http.routers.club-stg.tls.certresolver=myresolver"
+      - "traefik.http.services.club-stg.loadbalancar.server.port=80"
     image: ${REGISTRY}/frontend:${TAG}
-    ports:
-      - "81:80"
   backend:
     image: ${REGISTRY}/backend:${TAG}
-  postgres:
-    volumes:
-      - pgdata:/var/lib/postgresql/data_staging
+

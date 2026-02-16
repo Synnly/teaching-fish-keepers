@@ -63,7 +63,7 @@ jobs:
           username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
-          source: "docker-compose.yml,${{env.compose_override}}"
+          source: "docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
 
       - name: Pull on vps
@@ -79,5 +79,5 @@ jobs:
             echo "TAG=${{env.tag}}" > .env-deploy
             echo "REGISTRY=${{env.registry}}" >> .env-deploy
             docker compose pull
-            docker compose -f docker-compose.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} up -d
+            docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} up -d
             docker image prune -f

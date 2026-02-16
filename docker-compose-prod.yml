@@ -1,9 +1,15 @@
 services:
   frontend:
     image: ${REGISTRY}/frontend:${TAG}
+    networks:
+      - gateway
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.club-prod.rule=Host('club-poisson.duckdns.ord')"
+      - "traefik.http.routers.club-prod.entrypoints=websecure"
+      - "traefik.http.routers.club-prod.tls.certresolver=myresolver"
+      - "traefik.http.services.club-prod.loadbalancer.server.port=80"
   backend:
     image: ${REGISTRY}/backend:${TAG}
-  postgres:
-    volumes:
-      - pgdata:var/lib/postgresql/data_prod
-     
+         
