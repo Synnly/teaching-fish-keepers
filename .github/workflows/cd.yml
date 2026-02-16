@@ -56,7 +56,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Copy compose to vps
+      - name: turn down compose 
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{ secrets.SSH_KEY }} 
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{env.path}}
+            docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} down
+
+      - name: Copy config file to vps
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
