@@ -7,7 +7,7 @@ on:
       - staging
 env:
   path: ${{github.ref_name == 'main' && '/home/admin/app' || '/home/admin/staging' }}
-  compose_override: ${{ github.ref_name == 'staging' && 'docker-compose-prod.yml' || 'docker-compose-staging.yml' }}
+  compose_override: ${{ github.ref_name == 'main' && 'docker-compose-prod.yml' || 'docker-compose-staging.yml' }}
   tag-details: ${{ github.ref_name == 'main' && 'prod' || 'staging'  }}
   tag: sha-${{github.sha}}-${{github.ref_name == 'main' && 'main' || 'staging'}}
   registry_name: ghcr.io
