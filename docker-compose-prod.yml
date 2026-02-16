@@ -6,7 +6,7 @@ services:
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.club-prod.rule=Host('club-poisson.duckdns.ord')"
+      - "traefik.http.routers.club-prod.rule=Host('club-poisson.duckdns.org')"
       - "traefik.http.routers.club-prod.entrypoints=websecure"
       - "traefik.http.routers.club-prod.tls.certresolver=myresolver"
       - "traefik.http.services.club-prod.loadbalancer.server.port=80"
