@@ -9,7 +9,9 @@ services:
       - "traefik.http.routers.club-prod.rule=Host(`club-poisson.duckdns.org`)"
       - "traefik.http.routers.club-prod.entrypoints=websecure"
       - "traefik.http.routers.club-prod.tls.certresolver=myresolver"
-      - "traefik.http.services.club-prod.loadbalancer.server.port=80"
+      - "traefik.http.routers.club-prod.tls=true"
+      - "traefik.http.routers.club-stg.tls=true"
+      - "traefik.http.services.club-stg.loadbalancer.server.port=80"
   backend:
     image: ${REGISTRY}/backend:${TAG}
          

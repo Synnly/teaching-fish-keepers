@@ -13,6 +13,7 @@ env:
   registry_name: ghcr.io
   registry: ghcr.io/synnly/teaching-fish-keepers
   project_name: ${{ github.ref_name == 'main' && 'club_poisson_prod' || 'club_poisson_staging'}} 
+  host: ${{ github.ref_name == 'main' && ${{secrets.HOST}} || ${{secrets.HOST}} }}
 jobs:
 
   docker:
