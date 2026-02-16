@@ -1,9 +1,10 @@
 services:
   frontend:
     image: ${REGISTRY}/frontend:${TAG}
+    ports:
+      - "81:80"
   backend:
     image: ${REGISTRY}/backend:${TAG}
   postgres:
     volumes:
-      - pgata:var/lib/postgresql/data_prod
-     
+      - pg_data:/var/lib/postgresql/data_staging
