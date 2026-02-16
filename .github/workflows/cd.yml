@@ -1,0 +1,83 @@
+name: Build and push Docker images
+
+on:
+  push:
+    branches:
+      - main 
+      - staging
+env:
+  path: ${{github.ref_name == 'main' && '/home/admin/app' || '/home/admin/staging' }}
+  compose_override: ${{ github.ref_name == 'main' && 'docker-compose-prod.yml' || 'docker-compose-staging.yml' }}
+  tag-details: ${{ github.ref_name == 'main' && 'prod' || 'staging'  }}
+  tag: sha-${{github.sha}}-${{github.ref_name == 'main' && 'main' || 'staging'}}
+  registry_name: ghcr.io
+  registry: ghcr.io/synnly/teaching-fish-keepers
+  project_name: ${{ github.ref_name == 'main' && 'club_poisson_prod' || 'club_poisson_staging'}} 
+jobs:
+
+  docker:
+    permissions:
+      contents: read
+      packages: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.registry_name}}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:backend"
+          push: true
+          tags: ${{env.registry}}/backend:${{env.tag}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Write front secrets 
+        run : |
+              cd frontend
+              echo ${{secrets.FRONT_ENV}} > .env
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:frontend"
+          push: true
+          tags: ${{env.registry}}/frontend:${{env.tag}}
+            
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Copy compose to vps
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{secrets.SSH_PORT}}
+          source: "docker-compose-vps.yml,${{env.compose_override}}"
+          target: "${{env.path}}"
+
+      - name: Pull on vps
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{env.path}}
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "TAG=${{env.tag}}" > .env-deploy
+            echo "REGISTRY=${{env.registry}}" >> .env-deploy
+            docker compose pull
+            docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} up -d
+            docker image prune -f
