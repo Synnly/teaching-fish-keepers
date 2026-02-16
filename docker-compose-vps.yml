@@ -33,3 +33,6 @@ services:
 
 volumes:
   pgdata:
+networks:
+  gateway:
+      external: true
