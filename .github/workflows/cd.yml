@@ -65,8 +65,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{env.path}}
-            docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} down
-
+            if [ -f docker-compose-vps.yml ]; then
+              docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} down
+              sleep 1
+            fi
       - name: Copy config file to vps
         uses: appleboy/scp-action@v1
         with:
@@ -77,7 +79,6 @@ jobs:
           source: "grafana/,prometheus.yml,docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
           strip_components: 0
-          rm: true
            
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
