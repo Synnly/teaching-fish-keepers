@@ -63,9 +63,10 @@ jobs:
           username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
-          source: "docker-compose-vps.yml,${{env.compose_override}}"
+          source: "grafana/,prometheus.yml,docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
-
+          strip_components: 0
+           
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
         with:
