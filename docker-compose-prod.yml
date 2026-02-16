@@ -5,5 +5,5 @@ services:
     image: ${REGISTRY}/backend:${TAG}
   postgres:
     volumes:
-      - pgata:var/lib/postgresql/data_prod
+      - pgdata:var/lib/postgresql/data_prod
      
