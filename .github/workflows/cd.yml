@@ -3,13 +3,16 @@ name: Build and push Docker images
 on:
   push:
     branches:
-      - CD 
+      - main 
+      - staging
 env:
-  path: /home/admin/app
-  compose_override: docker-compose-prod.yml
-  tag: sha-${{ github.sha }}-main
+  path: ${{github.ref_name == 'main' && '/home/admin/app' || '/home/admin/staging' }}
+  compose_override: ${{ github.ref_name == 'staging' && 'docker-compose-prod.yml' || 'docker-compose-staging.yml' }}
+  tag-details: ${{ github.ref_name == 'main' && 'prod' || 'staging'  }}
+  tag: sha-${{github.sha}}-${{github.ref_name == 'main' && 'main' || 'staging'}}
   registry_name: ghcr.io
   registry: ghcr.io/synnly/teaching-fish-keepers
+  project_name: ${{ github.ref_name == 'main' && 'club_poisson_prod' || 'club_poisson_staging'}} 
 jobs:
 
   docker:
@@ -76,5 +79,5 @@ jobs:
             echo "TAG=${{env.tag}}" > .env-deploy
             echo "REGISTRY=${{env.registry}}" >> .env-deploy
             docker compose pull
-            docker compose -f docker-compose.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy up -d
-            docker image prune -f
+            docker compose -f docker-compose.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} up -d
+          docker image prune -f
