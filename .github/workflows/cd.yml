@@ -56,16 +56,33 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Copy compose to vps
+      - name: turn down compose 
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{ secrets.SSH_KEY }} 
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{env.path}}
+            if [ -f docker-compose-vps.yml ]; then
+              docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} down
+              sleep 1
+            fi
+            sudo rm -rf grafana/
+            sudo rm -f prometheus.yml
+            mkdir -p grafana
+      - name: Copy config file to vps
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{secrets.SSH_USERNAME}}
           key: ${{ secrets.SSH_KEY }}
           port: ${{secrets.SSH_PORT}}
-          source: "docker-compose-vps.yml,${{env.compose_override}}"
+          source: "grafana/,prometheus.yml,docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
-
+          strip_components: 0
+           
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
         with:
