@@ -69,6 +69,9 @@ jobs:
               docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} down
               sleep 1
             fi
+            sudo rm -rf grafana/
+            sudo rm -f prometheus.yml
+            mkdire -p grafana
       - name: Copy config file to vps
         uses: appleboy/scp-action@v1
         with:
