@@ -71,7 +71,7 @@ jobs:
             fi
             sudo rm -rf grafana/
             sudo rm -f prometheus.yml
-            mkdire -p grafana
+            mkdir -p grafana
       - name: Copy config file to vps
         uses: appleboy/scp-action@v1
         with:
