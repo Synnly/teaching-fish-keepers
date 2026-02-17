@@ -28,15 +28,15 @@ docker compose up
 ## Architecture du pipeline CI/CD
 
 ### CI
-À chaque **push** sur `main` ou chaque **pull request**, la pipeline CI va se lancer. Elle va récupérer le projet, installer les dépendances, exécuter le **linter**, le **formatter** puis lancer les tests.
+À chaque **push** ou chaque **pull request**, la pipeline CI va se lancer. Elle va récupérer le projet, installer les dépendances, exécuter le **linter**, le **formatter** puis lancer les **tests**.
 ### CD
 Lors des **push** sur les branches `main` ou `staging`, la pipeline CD va s'exécuter. 
 - On va d'abord s'identifier sur Docker avec les identifiants fournis dans les secrets GitHub.
-- On va ensuite récupérer le projet, le build avec Docker et le push sur un registry GHCR.
+- On va ensuite récupérer le projet, le build avec Docker et le push sur un registry GHCR avec le tag issu du commit `sha-[idcommit]-staging` ou `shad-[idcommit]-main` selon la branche.
 - Puis, on va créer le `.env` du front-end.
 - Si jamais le projet tourne déjà sur la machine distante, on va l'arrêter via un `compose down`.
 - On va ensuite copier les fichiers de configuration (Grafana, Prometheus, Docker) sur le serveur.
-- Enfin, on va effectuer un pull de l'image Docker sur le serveur et lancer le tout via un `compose up`.
+- Enfin, on va effectuer un pull de l'image Docker sur le serveur et lancer le tout via un `compose up`. Celui-ci prendra en compte le compose du VPS avec des options en fonction de s'il s'agit de la branche `main` ou `staging`. On y précise aussi les `.env` utilisés.
 
 ## Choix techniques et justifications
 Le seul choix technique a été de choisir Traefik, car il est plus facilement réglable depuis un conteneur Docker.
