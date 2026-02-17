@@ -36,7 +36,7 @@ Lors des **push** sur les branches `main` ou `staging`, la pipeline CD va s'exé
 - Puis, on va créer le `.env` du front-end.
 - Si jamais le projet tourne déjà sur la machine distante, on va l'arrêter via un `compose down`.
 - On va ensuite copier les fichiers de configuration (Grafana, Prometheus, Docker) sur le serveur.
-- Enfin, on va effectuer un pull de l'image Docker sur le serveur et lancer le tout via un `compose up`. Celui-ci prendra en compte le compose du VPS avec des options en fonction de s'il s'agit de la branche `main` ou `staging`. On y précise aussi les `.env` utilisés.
+- Enfin, on va effectuer un pull de l'image Docker sur le serveur et lancer le tout avec la commande `docker compose -f docker-compose-vps.yml -f ${{env.compose_override}} --env-file .env --env-file .env-deploy -p ${{env.project_name}} up -d`. Celui-ci prendra en compte le compose du VPS avec des options en fonction de s'il s'agit de la branche `main` ou `staging`. On y précise aussi les `.env` utilisés.
 
 ## Choix techniques et justifications
 Le seul choix technique a été de choisir Traefik, car il est plus facilement réglable depuis un conteneur Docker.
@@ -54,7 +54,8 @@ Le seul choix technique a été de choisir Traefik, car il est plus facilement r
 
 ## Site déployé
 
-Le site déployé est disponible à l'adresse [https://club-poisson.duckdns.org](https://club-poisson.duckdns.org/), et la version de staging est disponible à l'adresse [https://club-poisson-staging.duckdns.org/](https://club-poisson-staging.duckdns.org/)
+Le site déployé est disponible à l'adresse [https://club-poisson.duckdns.org](https://club-poisson.duckdns.org/), et la version de staging est disponible à l'adresse [https://club-poisson-staging.duckdns.org/](https://club-poisson-staging.duckdns.org/).  
+Les interfaces Grafana sont disponibles respectivement aux adresses [https://club-poisson-grafana.duckdns.org/](https://club-poisson-grafana.duckdns.org/) et [https://club-poisson-grafana-staging.duckdns.org/](https://club-poisson-grafana-staging.duckdns.org/).
 
 ## Membres du groupe
 - Alexis CHAPUSOT
