@@ -18,7 +18,7 @@ export default function HomePage() {
     <main className="max-w-5xl mx-auto px-4 py-12">
       <section className="text-center mb-12">
         <h2 className="text-4xl font-bold text-blue-900 mb-4">
-          Bienvenue au Club Poisson
+          Bienvenue au Club Poisson (staging)
         </h2>
         <p className="text-lg text-blue-700 max-w-2xl mx-auto">
           Une communauté pour les passionnés d'aquariophilie. Partagez votre
