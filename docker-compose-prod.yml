@@ -15,7 +15,7 @@ services:
   backend:
     image: ${REGISTRY}/backend:${TAG}
   grafana:
-    label:
+    labels:
       - "traefik.enable=true"
       - "traefik.http.routers.club-prod-grafana.rule=Host(`club-poisson-grafana.duckdns.org`)"
       - "traefik.http.routers.club-prod-grafana.entrypoints=websecure"
@@ -23,4 +23,3 @@ services:
       - "traefik.http.routers.club-prod-grafana.tls=true"
       - "traefik.http.services.club-prod-grafana.loadbalancer.server.port=3000"
       - "traefik.docker.network=gateway"
-         
