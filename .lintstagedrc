@@ -1,0 +1,10 @@
+{
+    "backend/src/**/*.{ts,js}": [
+        "bun --cwd backend lint --fix",
+        "bun --cwd backend format"
+    ],
+    "frontend/src/**/*.{ts,tsx,js,jsx}": [
+        "bun --cwd frontend lint --fix",
+        "bun --cwd frontend format"
+    ]
+}

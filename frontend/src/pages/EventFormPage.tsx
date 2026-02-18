@@ -73,7 +73,7 @@ export default function EventFormPage() {
           <span className="text-sm font-medium text-gray-700">Titre *</span>
           <input
             name="title"
-            value={form.title}
+            value={form.title ?? ""}
             onChange={handleChange}
             required
             className="border border-gray-300 rounded-lg px-3 py-2"
@@ -101,7 +101,7 @@ export default function EventFormPage() {
             <input
               type="datetime-local"
               name="date"
-              value={form.date}
+              value={form.date ?? ""}
               onChange={handleChange}
               required
               className="border border-gray-300 rounded-lg px-3 py-2"
