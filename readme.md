@@ -1,8 +1,8 @@
-## Docker compose
+# Docker compose
 
 pour lancer: docker compose up
 
-### ATTENTION
+## ATTENTION
 
 un fichier .env est nécessaire à la racine
 
@@ -12,10 +12,22 @@ POSTGRES_DB=Db utilisé
 POSTGRES_USER=username voulu
 POSTGRES_PASSWORD=motdepasse
 
-## Monitoring
+### Monitoring
 
 Login : `admin`
 
 Password: `admin`
 
 **CHANGER DE MOT DE PASSE DES QUE POSSIBLE**
+
+#### CI
+
+la CI fonctionne de la facon suivante:
+lancement en parallèle sur frontend et backend:
+
+- checkout
+- setup bun
+- installation des dépedances
+- lint
+- format
+- test
