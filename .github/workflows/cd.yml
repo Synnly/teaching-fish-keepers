@@ -3,7 +3,7 @@ name: Build and push Docker images
 on:
   push:
     branches:
-      - main 
+      - main
       - staging
 env:
   path: ${{github.ref_name == 'main' && '/home/admin/app' || '/home/admin/staging' }}
@@ -12,9 +12,8 @@ env:
   tag: sha-${{github.sha}}-${{github.ref_name == 'main' && 'main' || 'staging'}}
   registry_name: ghcr.io
   registry: ghcr.io/synnly/teaching-fish-keepers
-  project_name: ${{ github.ref_name == 'main' && 'club_poisson_prod' || 'club_poisson_staging'}} 
+  project_name: ${{ github.ref_name == 'main' && 'club_poisson_prod' || 'club_poisson_staging'}}
 jobs:
-
   docker:
     permissions:
       contents: read
@@ -41,10 +40,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Write front secrets 
-        run : |
-              cd frontend
-              echo ${{secrets.FRONT_ENV}} > .env
+      - name: Write front secrets
+        run: |
+          cd frontend
+          echo ${{secrets.FRONT_ENV}} > .env
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
@@ -52,16 +51,16 @@ jobs:
           context: "{{defaultContext}}:frontend"
           push: true
           tags: ${{env.registry}}/frontend:${{env.tag}}
-            
+
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: turn down compose 
+      - name: turn down compose
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{secrets.SSH_USERNAME}}
-          key: ${{ secrets.SSH_KEY }} 
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{env.path}}
@@ -82,7 +81,7 @@ jobs:
           source: "grafana/,prometheus.yml,docker-compose-vps.yml,${{env.compose_override}}"
           target: "${{env.path}}"
           strip_components: 0
-           
+
       - name: Pull on vps
         uses: appleboy/ssh-action@v1
         with:
